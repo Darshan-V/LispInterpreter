@@ -165,13 +165,13 @@ const expressionParserEval = (input, env = globalEnv) => {
   return null
 }
 
-let rl = readline.createInterface(process.stdin, process.stdout)
+const rl = readline.createInterface(process.stdin, process.stdout)
 rl.setPrompt('lispi> ')
 rl.prompt()
-rl.on('line', function(line) {
+rl.on('line', function (line) {
   if (line === 'quit') rl.close()
   console.log(expressionParserEval(line))
   rl.prompt()
-}).on('close', function() {
+}).on('close', function () {
   process.exit(0)
 })
