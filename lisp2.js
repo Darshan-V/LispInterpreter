@@ -134,8 +134,9 @@ function defineParser(input, env) {
 }
 
 function ifParser(input, env = globalScope) {
-  // parse "(if "
-  /*
+  // if(input[0] === '(')
+  //input = spaceParser(input)
+  /*while(input[0] !== ')'){
     const result = expression(input, env)
     if (result === null) return null
   
@@ -144,13 +145,14 @@ function ifParser(input, env = globalScope) {
   
     const falseResult = exprParser(trueResult[1], env)
     if (falseResult === null) return null
-  
+//}
     // check ")" in falseResult
-  
+  if(result[1] === ')'){
     if (result[0]) {
       return expression(trueResult[0], env)
     }
     return expression(falseResult[0], env)
+}
   */
 
   const array = []; let result
@@ -211,7 +213,6 @@ function programParser(input, env = globalScope) {
   return [result[0], input, env]
 }
 
-console.log(lisp('(- 1 3)'))
-console.log(lisp('(if (< 3 4) (+ 1 3) (* 2 3))'))
-console.log(lisp('(if (< 3 4) (* 1 1) (* 2 2))'))
-console.log(lisp('(if (< 4 3) (+ 1 1) (- 4 1))'))
+console.log(lisp('> 3 2 1'))
+
+
