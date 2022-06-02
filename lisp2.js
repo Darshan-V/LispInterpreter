@@ -6,15 +6,6 @@ function numParser(input) {
   return null
 }
 
-function boolParser(input) {
-  if (input.substr(0, 2) === '#t') {
-    return [true, input.substr(2)]
-  } else if (input.substr(0, 2) === '#f') {
-    return [false, input.substr(2)]
-  }
-  return null
-}
-
 function spaceParser(input) {
   const reg = /^\s+/
   if (input.match(reg) !== null) {
@@ -204,9 +195,6 @@ function programParser(input, env = globalScope) {
   }
   else if (stringParser(input) !== null) {
     result = stringParser(input)
-  }
-  else if (boolParser(input) !== null) {
-    result = boolParser(input)
   }
   else if (input[0] === '(') {
     result = expression(input, env)
