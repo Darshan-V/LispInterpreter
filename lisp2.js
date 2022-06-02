@@ -23,6 +23,24 @@ function spaceParser(input) {
   return null
 }
 
+function stringParser(input) {
+  if (!input.startsWith('"')) return null
+  const escChar = ['"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u']
+  const invalid = [9, 10] // character code of tab and line
+  let i = 1
+  while (input[i] !== '"') {
+    if (invalid.includes(input[i].charCodeAt(0))) return null
+    if (input[i] === '\\') {
+      if (!escChar.includes(input[i + 1])) return null
+      if (input[i + 1] === 'u') {
+        i += 4
+      }
+      i += 2
+    } else i++
+  }
+  return [input.slice(1, i), input.slice(i + 1)]
+}
+
 function exprParser(input) {
   if (input[0] === '(') {
     let parseOut = input[0]
@@ -125,6 +143,25 @@ function defineParser(input, env) {
 }
 
 function ifParser(input, env = globalScope) {
+  // parse "(if "
+  /*
+    const result = expression(input, env)
+    if (result === null) return null
+  
+    const trueResult = exprParser(result[1], env)
+    if (trueResult === null) return null
+  
+    const falseResult = exprParser(trueResult[1], env)
+    if (falseResult === null) return null
+  
+    // check ")" in falseResult
+  
+    if (result[0]) {
+      return expression(trueResult[0], env)
+    }
+    return expression(falseResult[0], env)
+  */
+
   const array = []; let result
   while (input[0] !== ')') {
     if (spaceParser(input)) {
@@ -139,6 +176,7 @@ function ifParser(input, env = globalScope) {
     return [programParser(array[1], env)[0], input.substr(1), env]
   }
   return [programParser(array[2], env)[0], input.substr(1), env]
+
 }
 
 function userDef(input, env = globalScope) {
@@ -164,6 +202,9 @@ function programParser(input, env = globalScope) {
   if (numParser(input) !== null) {
     result = numParser(input)
   }
+  else if (stringParser(input) !== null) {
+    result = stringParser(input)
+  }
   else if (boolParser(input) !== null) {
     result = boolParser(input)
   }
@@ -185,3 +226,4 @@ function programParser(input, env = globalScope) {
 console.log(lisp('(- 1 3)'))
 console.log(lisp('(if (< 3 4) (+ 1 3) (* 2 3))'))
 console.log(lisp('(if (< 3 4) (* 1 1) (* 2 2))'))
+console.log(lisp('(if (< 4 3) (+ 1 1) (- 4 1))'))
