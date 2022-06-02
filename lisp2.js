@@ -184,3 +184,4 @@ function programParser(input, env = globalScope) {
 
 console.log(lisp('(- 1 3)'))
 console.log(lisp('(if (< 3 4) (+ 1 3) (* 2 3))'))
+console.log(lisp('(if (< 3 4) (* 1 1) (* 2 2))'))
