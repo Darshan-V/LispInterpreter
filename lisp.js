@@ -3,7 +3,7 @@ let result
 const numberParser = input => (result = input.match(/^-?(0|([1-9][0-9]*))(\.[0-9]+)?([E][+-]?[0-9]+)?/i)) && [result[0] * 1, input.slice(result[0].length)]
 const spaceParser = input => input.replace(/^\s+/, '')
 const symbolParser = (input) => {
-  result = input.match(/^(([a-zA-Z_]+)|(\+|-|>=|<=|>|<|=|\*|\\))/)
+  result = input.match(/^(([a-zA-Z]+)|(\+|-|>=|<=|>|<|=|\*|\\))/)
   if (!result) return null
   return [result[0], input.slice(result[0].length)]
 }
@@ -19,7 +19,19 @@ const globalEnv = {
   '<=': (arr) => arr[0] <= arr[1],
   '=': (arr) => arr[0] === arr[1],
   pi: Math.PI,
-  sqrt: (input) => Math.sqrt(input)
+  sqrt: (input) => Math.sqrt(input),
+  map: (mapper, arr) => arr.map(mapper),
+  list: (...args) => args,
+  'equal?': (arr) => arr[0] === arr[1],
+  length: (list) => list.length,
+  car: x => x[0],
+  cdr: x => x.slice(1),
+  print: input => console.log(input[0]),
+  max: input => input.reduce((array, value) => Math.max(array, value)),
+  min: input => input.reduce((array, value) => Math.min(array, value)),
+  cons: (x, y) => [x, y],
+  pow: input => Math.pow(input[0], input[1])
+
 }
 
 const ifParser = (input, env = globalEnv) => {
@@ -127,7 +139,7 @@ const defineParser = input => {
   return [identifier, spaceParser(value[1]).slice(1)]
 }
 
-const beginParser = (input, env) => {
+const beginParser = (input, env = globalEnv) => {
   if (!input.startsWith('begin')) return null
   input = input.slice(5)
 
@@ -138,7 +150,7 @@ const beginParser = (input, env) => {
   return [result[0], input.slice(1)]
 }
 
-const updateLambdaArgs = (func, input, env) => {
+const updateLambdaArgs = (func, input, env = globalEnv) => {
   let expressionResult; const funcKeys = Object.keys(globalEnv[func].args)
   let index = 0
 
@@ -193,8 +205,7 @@ const sExpressionParser = (input, env = globalEnv) => {
   let result
 
   if (input[0] !== '(') return null
-  input = input.slice(1)
-  // input = spaceParser(input.slice(1))
+  input = spaceParser(input.slice(1))
   const parsers = [defineParser, beginParser, ifParser, quoteParser, lambdaParser, globalEnvParser]
 
   for (const parser of parsers) {
@@ -248,10 +259,10 @@ const expressionParserEval = (input, env = globalEnv) => {
 const rl = readline.createInterface(process.stdin, process.stdout)
 rl.setPrompt('lispi> ')
 rl.prompt()
-rl.on('line', function (line) {
+rl.on('line', function(line) {
   if (line === 'quit') rl.close()
   console.log(expressionParserEval(line))
   rl.prompt()
-}).on('close', function () {
+}).on('close', function() {
   process.exit(0)
 })
