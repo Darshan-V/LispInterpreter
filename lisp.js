@@ -32,6 +32,7 @@ const globalEnv = {
   cons: (x, y) => [x, y],
   pow: input => Math.pow(input[0], input[1])
 
+
 }
 
 const ifParser = (input, env = globalEnv) => {
