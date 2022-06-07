@@ -19,7 +19,15 @@ const globalEnv = {
   '<=': (arr) => arr[0] <= arr[1],
   '=': (arr) => arr[0] === arr[1],
   pi: Math.PI,
-  sqrt: (input) => Math.sqrt(input)
+  sqrt: (input) => Math.sqrt(input),
+  "equal?": (arr) => arr[0] === arr[1],
+  pow: (arr) => Math.pow(arr[0], arr[1]),
+  car: (arr) => arr[0],
+  cdr: (arr) => arr.slice(1),
+  print: (input) => console.log(input[0]),
+  map: (mapper, arr) => arr.map(mapper),
+  cosn: (car, cdr) => [car, cdr],
+  list: (...input) => input
 }
 
 const ifParser = (input, env = globalEnv) => {
@@ -222,11 +230,11 @@ const expressionParserEval = (input, env = globalEnv) => {
 const rl = readline.createInterface(process.stdin, process.stdout)
 rl.setPrompt('lispy> ')
 rl.prompt()
-rl.on('line', function (line) {
+rl.on('line', function(line) {
   if (line === 'quit') rl.close()
   console.log(expressionParserEval(line))
   rl.prompt()
-}).on('close', function () {
+}).on('close', function() {
   process.exit(0)
 })
 
